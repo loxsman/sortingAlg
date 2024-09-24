@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"math/rand"
+	"sync"
 	"time"
 )
 
@@ -136,49 +137,72 @@ func mergeSort(array []int) []int {
 }
 
 func main() {
-	size := 10000
+	size := 100000
 	unSortArray := make([]int, size)
 	fillArr(unSortArray)
-	array := make([]int, size)
 
-	startProgramm := time.Now()
+	var wg sync.WaitGroup
+	wg.Add(6)
 
-	copy(array, unSortArray)
-	startBuble := time.Now()
-	bubleSort(array)
-	durationBuble := time.Since(startBuble)
-	fmt.Printf("Buble sort: %d ms\n", durationBuble.Milliseconds())
+	go func() {
+		defer wg.Done()
+		array := make([]int, size)
+		copy(array, unSortArray)
+		startBuble := time.Now()
+		bubleSort(array)
+		durationBuble := time.Since(startBuble)
+		fmt.Printf("Bubble sort: %d ms\n", durationBuble.Milliseconds())
+	}()
 
-	copy(array, unSortArray)
-	startShaker := time.Now()
-	shakerSort(array)
-	durationShaker := time.Since(startShaker)
-	fmt.Printf("Shaker sort: %d ms\n", durationShaker.Milliseconds())
+	go func() {
+		defer wg.Done()
+		array := make([]int, size)
+		copy(array, unSortArray)
+		startShaker := time.Now()
+		shakerSort(array)
+		durationShaker := time.Since(startShaker)
+		fmt.Printf("Shaker sort: %d ms\n", durationShaker.Milliseconds())
+	}()
 
-	copy(array, unSortArray)
-	startSelection := time.Now()
-	selectionSort(array)
-	durationSelection := time.Since(startSelection)
-	fmt.Printf("Selection sort: %d ms\n", durationSelection.Milliseconds())
+	go func() {
+		defer wg.Done()
+		array := make([]int, size)
+		copy(array, unSortArray)
+		startSelection := time.Now()
+		selectionSort(array)
+		durationSelection := time.Since(startSelection)
+		fmt.Printf("Selection sort: %d ms\n", durationSelection.Milliseconds())
+	}()
 
-	copy(array, unSortArray)
-	startInsertion := time.Now()
-	insertionSort(array)
-	durationInsertion := time.Since(startInsertion)
-	fmt.Printf("Insertion sort: %d ms\n", durationInsertion.Milliseconds())
+	go func() {
+		defer wg.Done()
+		array := make([]int, size)
+		copy(array, unSortArray)
+		startInsertion := time.Now()
+		insertionSort(array)
+		durationInsertion := time.Since(startInsertion)
+		fmt.Printf("Insertion sort: %d ms\n", durationInsertion.Milliseconds())
+	}()
 
-	copy(array, unSortArray)
-	startQuick := time.Now()
-	array = quickSort(array)
-	durationQuick := time.Since(startQuick)
-	fmt.Printf("Quick sort: %d ms\n", durationQuick.Milliseconds())
+	go func() {
+		defer wg.Done()
+		array := make([]int, size)
+		copy(array, unSortArray)
+		startQuick := time.Now()
+		array = quickSort(array)
+		durationQuick := time.Since(startQuick)
+		fmt.Printf("Quick sort: %d ms\n", durationQuick.Milliseconds())
+	}()
 
-	copy(array, unSortArray)
-	startMerge := time.Now()
-	array = mergeSort(array)
-	durationMerge := time.Since(startMerge)
-	fmt.Printf("Merge sort: %d ms\n", durationMerge.Milliseconds())
+	go func() {
+		defer wg.Done()
+		array := make([]int, size)
+		copy(array, unSortArray)
+		startMerge := time.Now()
+		array = mergeSort(array)
+		durationMerge := time.Since(startMerge)
+		fmt.Printf("Merge sort: %d ms\n", durationMerge.Milliseconds())
+	}()
 
-	durationProgramm := time.Since(startProgramm)
-	fmt.Printf("Full time: %d ms\n", durationProgramm.Milliseconds())
+	wg.Wait()
 }
